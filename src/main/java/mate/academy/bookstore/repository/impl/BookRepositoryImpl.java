@@ -2,11 +2,13 @@ package mate.academy.bookstore.repository.impl;
 
 import java.util.List;
 import mate.academy.bookstore.exception.DataProcessingException;
+import mate.academy.bookstore.exception.EntityNotFoundException;
 import mate.academy.bookstore.model.Book;
 import mate.academy.bookstore.repository.BookRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -46,7 +48,17 @@ public class BookRepositoryImpl implements BookRepository {
         try (Session session = sessionFactory.openSession()) {
             return session.createQuery("FROM Book", Book.class).getResultList();
         } catch (Exception e) {
-            throw new DataProcessingException("Can't find all books", e);
+            throw new EntityNotFoundException("Can't find all books", e);
+        }
+    }
+
+    @Override
+    public Book findById(Long id) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Book> query = session.createQuery("FROM Book WHERE id = :id", Book.class);
+            return query.setParameter("id", id).uniqueResult();
+        } catch (Exception e) {
+            throw new EntityNotFoundException("Can't find book by id: " + id, e);
         }
     }
 }
