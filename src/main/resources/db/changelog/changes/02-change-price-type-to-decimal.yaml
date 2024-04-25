@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: change-price-type-to-decimal
+      author: your_name
+      changes:
+        - modifyDataType:
+            tableName: books
+            columnName: price
+            newDataType: decimal(10, 2)
