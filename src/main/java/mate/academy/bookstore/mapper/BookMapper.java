@@ -2,7 +2,7 @@ package mate.academy.bookstore.mapper;
 
 import mate.academy.bookstore.config.MapperConfig;
 import mate.academy.bookstore.dto.BookDto;
-import mate.academy.bookstore.dto.CreateBookRequestDto;
+import mate.academy.bookstore.dto.BookRequestDto;
 import mate.academy.bookstore.model.Book;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -13,5 +13,5 @@ public interface BookMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "deleted", ignore = true)
-    Book toModel(CreateBookRequestDto requestDto);
+    Book toModel(BookRequestDto requestDto);
 }

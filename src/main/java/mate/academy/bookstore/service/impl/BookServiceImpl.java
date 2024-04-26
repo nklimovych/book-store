@@ -2,7 +2,7 @@ package mate.academy.bookstore.service.impl;
 
 import java.util.List;
 import mate.academy.bookstore.dto.BookDto;
-import mate.academy.bookstore.dto.CreateBookRequestDto;
+import mate.academy.bookstore.dto.BookRequestDto;
 import mate.academy.bookstore.exception.EntityNotFoundException;
 import mate.academy.bookstore.mapper.BookMapper;
 import mate.academy.bookstore.model.Book;
@@ -23,7 +23,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto save(CreateBookRequestDto requestDto) {
+    public BookDto save(BookRequestDto requestDto) {
         Book book = bookMapper.toModel(requestDto);
         Book savedBook = bookRepository.save(book);
         return bookMapper.toDto(savedBook);
@@ -42,7 +42,7 @@ public class BookServiceImpl implements BookService {
         return bookMapper.toDto(book);
     }
 
-    public BookDto updateById(Long id, CreateBookRequestDto requestDto) {
+    public BookDto updateById(Long id, BookRequestDto requestDto) {
         if (bookRepository.findById(id).isPresent()) {
             Book book = bookMapper.toModel(requestDto);
             book.setId(id);
