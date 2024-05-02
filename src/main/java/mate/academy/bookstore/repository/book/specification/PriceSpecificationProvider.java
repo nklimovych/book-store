@@ -1,14 +1,17 @@
 package mate.academy.bookstore.repository.book.specification;
 
+import java.util.Optional;
+import mate.academy.bookstore.dto.BookSearchParametersDto;
 import mate.academy.bookstore.model.Book;
+import mate.academy.bookstore.repository.SpecificationProvider;
 import mate.academy.bookstore.repository.book.BookSearchParameter;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PriceSpecificationProvider extends AbstractSpecificationProvider<Book> {
-    private static final int MIN_PRICE = 0;
-    private static final int MAX_PRICE = 1;
+public class PriceSpecificationProvider implements SpecificationProvider<Book> {
+    private static final int DEFAULT_MIN_PRICE = 0;
+    private static final int DEFAULT_MAX_PRICE = Integer.MAX_VALUE;
 
     @Override
     public String getKey() {
@@ -16,8 +19,11 @@ public class PriceSpecificationProvider extends AbstractSpecificationProvider<Bo
     }
 
     @Override
-    public Specification<Book> getSpecification(String[] params) {
+    public Specification<Book> getSpecification(BookSearchParametersDto params) {
+        int minPrice = Optional.ofNullable(params.minPrice()).orElse(DEFAULT_MIN_PRICE);
+        int maxPrice = Optional.ofNullable(params.maxPrice()).orElse(DEFAULT_MAX_PRICE);
+
         return ((root, query, criteriaBuilder) ->
-                criteriaBuilder.between(root.get(getKey()), params[MIN_PRICE], params[MAX_PRICE]));
+                criteriaBuilder.between(root.get(getKey()), minPrice, maxPrice));
     }
 }
