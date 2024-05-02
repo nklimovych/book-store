@@ -13,7 +13,7 @@ public class BookRequestDto {
     private String title;
     @NotBlank
     private String author;
-    @ISBN(type = ISBN.Type.ISBN_10)
+    @ISBN(type = ISBN.Type.ANY)
     private String isbn;
     @NotNull
     @Min(0)
