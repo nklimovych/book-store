@@ -1,6 +1,8 @@
 package mate.academy.bookstore.service.impl;
 
 import java.util.List;
+import java.util.Objects;
+
 import mate.academy.bookstore.dto.BookDto;
 import mate.academy.bookstore.dto.BookRequestDto;
 import mate.academy.bookstore.exception.DuplicateIsbnException;
@@ -49,8 +51,14 @@ public class BookServiceImpl implements BookService {
     }
 
     public BookDto updateById(Long id, BookRequestDto requestDto) {
-        bookRepository.findById(id).orElseThrow(
+        Book existingBook = bookRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Book not found by id " + id));
+
+        String requestIsbn = requestDto.getIsbn();
+        if (!Objects.equals(existingBook.getIsbn(), requestIsbn)
+                && bookRepository.findBookByIsbn(requestIsbn) != null) {
+            throw new DuplicateIsbnException("Book with ISBN " + requestIsbn + " already exists");
+        }
 
         Book book = bookMapper.toModel(requestDto);
         book.setId(id);
