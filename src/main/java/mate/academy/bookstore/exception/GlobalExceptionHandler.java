@@ -1,6 +1,5 @@
 package mate.academy.bookstore.exception;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,9 +32,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return getResponseEntity(HttpStatus.BAD_REQUEST, errors);
     }
 
-    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    protected ResponseEntity<Object> handleMethodRepository(
-            SQLIntegrityConstraintViolationException ex) {
+    @ExceptionHandler(DuplicateIsbnException.class)
+    protected ResponseEntity<Object> handleMethodRepository(DuplicateIsbnException ex) {
         return getResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 

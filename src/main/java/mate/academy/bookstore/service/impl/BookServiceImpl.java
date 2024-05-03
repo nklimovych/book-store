@@ -3,6 +3,7 @@ package mate.academy.bookstore.service.impl;
 import java.util.List;
 import mate.academy.bookstore.dto.BookDto;
 import mate.academy.bookstore.dto.BookRequestDto;
+import mate.academy.bookstore.exception.DuplicateIsbnException;
 import mate.academy.bookstore.exception.EntityNotFoundException;
 import mate.academy.bookstore.mapper.BookMapper;
 import mate.academy.bookstore.model.Book;
@@ -24,6 +25,11 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto save(BookRequestDto requestDto) {
+        String isbn = requestDto.getIsbn();
+        if (bookRepository.findBookByIsbn(isbn) != null) {
+            throw new DuplicateIsbnException("Book with ISBN " + isbn + " already exists");
+        }
+
         Book book = bookMapper.toModel(requestDto);
         Book savedBook = bookRepository.save(book);
         return bookMapper.toDto(savedBook);
