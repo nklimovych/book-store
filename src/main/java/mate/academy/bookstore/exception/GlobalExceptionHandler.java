@@ -36,7 +36,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     protected ResponseEntity<Object> handleMethodRepository(
             SQLIntegrityConstraintViolationException ex) {
-        return getResponseEntity(HttpStatus.CONFLICT, ex.getMessage());
+        return getResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
