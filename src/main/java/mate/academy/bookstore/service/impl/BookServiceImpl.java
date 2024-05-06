@@ -2,9 +2,9 @@ package mate.academy.bookstore.service.impl;
 
 import java.util.List;
 import java.util.Objects;
-import mate.academy.bookstore.dto.BookDto;
-import mate.academy.bookstore.dto.BookRequestDto;
-import mate.academy.bookstore.dto.BookSearchParametersDto;
+import mate.academy.bookstore.dto.book.BookDto;
+import mate.academy.bookstore.dto.book.BookRequestDto;
+import mate.academy.bookstore.dto.book.BookSearchParametersDto;
 import mate.academy.bookstore.exception.DuplicateIsbnException;
 import mate.academy.bookstore.exception.EntityNotFoundException;
 import mate.academy.bookstore.mapper.BookMapper;

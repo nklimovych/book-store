@@ -42,6 +42,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return getResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
+    @ExceptionHandler(RegistrationException.class)
+    protected ResponseEntity<Object> handleMethodRegistrationException(RegistrationException ex) {
+        return getResponseEntity(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
     private ResponseEntity<Object> getResponseEntity(HttpStatus status, Object message) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
