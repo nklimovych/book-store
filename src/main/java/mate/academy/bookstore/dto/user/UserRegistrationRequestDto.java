@@ -12,10 +12,7 @@ import mate.academy.bookstore.validator.FieldMatch;
         fieldMatch = "repeatPassword",
         message = "Passwords does not match")
 public class UserRegistrationRequestDto {
-    private static final String EMAIL_VALIDATION_REGEX
-            = "^((?!\\.)[\\w\\-_.]*[^.])(@\\w+)(\\.\\w+(\\.\\w+)?[^.\\W])$";
-
-    @Email(regexp = EMAIL_VALIDATION_REGEX)
+    @Email
     private String email;
     @NotBlank
     @Size(min = 8, message = "Password must be at least 8 characters long")

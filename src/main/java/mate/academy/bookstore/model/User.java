@@ -14,7 +14,7 @@ import org.hibernate.annotations.SQLRestriction;
 
 @Getter
 @Setter
-@EqualsAndHashCode(of = {"id", "email", "firstName", "lastName"})
+@EqualsAndHashCode(of = {"id", "email", "firstName", "lastName", "shippingAddress"})
 @Entity
 @SQLDelete(sql = "UPDATE users SET is_deleted=true WHERE id=?")
 @SQLRestriction(value = "is_deleted=false")

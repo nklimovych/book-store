@@ -16,21 +16,8 @@ public class FieldMatchValidator
 
     @Override
     public boolean isValid(UserRegistrationRequestDto userDto, ConstraintValidatorContext context) {
-        if (userDto == null) {
-            return false;
-        }
-
-        String password = userDto.getPassword();
-        String repeatPassword = userDto.getRepeatPassword();
-
-        if (password == null) {
-            return false;
-        }
-
-        if (StringUtils.isBlank(password) || StringUtils.isBlank(repeatPassword)) {
-            return false;
-        }
-
-        return Objects.equals(password, repeatPassword);
+        return userDto != null
+                && !StringUtils.isBlank(userDto.getPassword())
+                && Objects.equals(userDto.getPassword(), userDto.getRepeatPassword());
     }
 }
