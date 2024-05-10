@@ -1,6 +1,5 @@
 package mate.academy.bookstore.validator;
 
-import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.TYPE;
 
 import jakarta.validation.Constraint;
@@ -9,7 +8,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({TYPE, ANNOTATION_TYPE})
+@Target({TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = FieldMatchValidator.class)
 public @interface FieldMatch {
@@ -18,10 +17,4 @@ public @interface FieldMatch {
     Class<? extends Payload>[] payload() default {};
     String field();
     String fieldMatch();
-
-    @Target({TYPE, ANNOTATION_TYPE})
-    @Retention(RetentionPolicy.RUNTIME)
-    @interface List {
-        FieldMatch[] value();
-    }
 }
