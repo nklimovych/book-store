@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
-import mate.academy.bookstore.dto.BookSearchParametersDto;
+import mate.academy.bookstore.dto.book.BookSearchParametersDto;
 import mate.academy.bookstore.model.Book;
 import mate.academy.bookstore.repository.SpecificationBuilder;
 import mate.academy.bookstore.repository.SpecificationProviderManager;
