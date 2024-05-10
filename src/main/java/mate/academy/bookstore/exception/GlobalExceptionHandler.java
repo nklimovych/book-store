@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -43,8 +44,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(RegistrationException.class)
-    protected ResponseEntity<Object> handleMethodRegistrationException(RegistrationException ex) {
+    protected ResponseEntity<Object> handleMethodRegistration(RegistrationException ex) {
         return getResponseEntity(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    protected ResponseEntity<Object> handleAccessDenied(AccessDeniedException ex) {
+        return getResponseEntity(HttpStatus.FORBIDDEN, ex.getMessage());
     }
 
     private ResponseEntity<Object> getResponseEntity(HttpStatus status, Object message) {
