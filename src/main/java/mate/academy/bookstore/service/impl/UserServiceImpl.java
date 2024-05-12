@@ -3,7 +3,7 @@ package mate.academy.bookstore.service.impl;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import mate.academy.bookstore.dto.user.UserRegistrationRequestDto;
-import mate.academy.bookstore.dto.user.UserResponseDto;
+import mate.academy.bookstore.dto.user.UserRegistrationResponseDto;
 import mate.academy.bookstore.exception.RegistrationException;
 import mate.academy.bookstore.mapper.UserMapper;
 import mate.academy.bookstore.model.RoleName;
@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
 
     @Override
-    public UserResponseDto save(UserRegistrationRequestDto requestDto)
+    public UserRegistrationResponseDto save(UserRegistrationRequestDto requestDto)
             throws RegistrationException {
         String email = requestDto.getEmail();
         if (userRepository.existsByEmailIgnoreCase(email)) {
