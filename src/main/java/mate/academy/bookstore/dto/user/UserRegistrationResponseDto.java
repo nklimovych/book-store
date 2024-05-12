@@ -1,6 +1,6 @@
 package mate.academy.bookstore.dto.user;
 
-public record UserResponseDto(
+public record UserRegistrationResponseDto(
         Long id,
         String email,
         String firstName,

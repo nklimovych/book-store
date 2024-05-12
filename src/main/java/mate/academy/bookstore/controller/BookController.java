@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookController {
     private final BookService bookService;
 
-    @PreAuthorize("hasRole('USER')")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get all books", description = "Get a list of all available books")
@@ -37,7 +36,6 @@ public class BookController {
         return bookService.findAll(pageable);
     }
 
-    @PreAuthorize("hasRole('USER')")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get a book by ID", description = "Get a book by ID, if there is one")
