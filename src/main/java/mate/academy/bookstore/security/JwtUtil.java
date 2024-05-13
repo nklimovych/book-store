@@ -6,7 +6,6 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.util.Date;
 import java.util.function.Function;
 import javax.crypto.SecretKey;
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtUtil {
-    private final Key secret;
+    private final SecretKey secret;
 
     @Value("${jwt.expiration}")
     private Long expiration;
@@ -36,7 +35,7 @@ public class JwtUtil {
     public boolean isValidToken(String token) {
         try {
             Jws<Claims> claimsJws = Jwts.parser()
-                    .verifyWith((SecretKey) secret)
+                    .verifyWith(secret)
                     .build()
                     .parseSignedClaims(token);
             return !claimsJws.getPayload().getExpiration().before(new Date());
@@ -51,7 +50,7 @@ public class JwtUtil {
 
     private <T> T getClaimsFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = Jwts.parser()
-                    .verifyWith((SecretKey) secret)
+                    .verifyWith(secret)
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();
