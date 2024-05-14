@@ -1,6 +1,6 @@
 package mate.academy.bookstore.service.impl;
 
-import java.util.Set;
+import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import mate.academy.bookstore.dto.user.UserRegistrationRequestDto;
 import mate.academy.bookstore.dto.user.UserResponseDto;
@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.toModel(requestDto);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(roleRepository.findAllByRoles(Set.of(RoleName.USER)));
+        user.setRoles(Collections.singleton(roleRepository.findByName(RoleName.USER)));
         User savedUser = userRepository.save(user);
         return userMapper.toDto(savedUser);
     }

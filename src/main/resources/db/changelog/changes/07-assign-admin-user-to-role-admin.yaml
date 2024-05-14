@@ -11,4 +11,4 @@ databaseChangeLog:
                   valueComputed: (SELECT id FROM users WHERE email = 'admin@gmail.com')
               - column:
                   name: role_id
-                  valueComputed: (SELECT id FROM roles WHERE role = 'ADMIN')
+                  valueComputed: (SELECT id FROM roles WHERE name = 'ADMIN')
