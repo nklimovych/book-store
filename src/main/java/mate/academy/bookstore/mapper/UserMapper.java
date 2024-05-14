@@ -12,5 +12,6 @@ public interface UserMapper {
     UserResponseDto toDto(User user);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "roles", ignore = true)
     User toModel(UserRegistrationRequestDto requestDto);
 }
