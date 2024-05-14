@@ -1,6 +1,5 @@
 package mate.academy.bookstore.exception;
 
-import io.jsonwebtoken.JwtException;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -10,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -53,11 +51,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     protected ResponseEntity<Object> handleAccessDenied(AccessDeniedException ex) {
         return getResponseEntity(HttpStatus.FORBIDDEN, ex.getMessage());
-    }
-
-    @ExceptionHandler({JwtException.class, AuthenticationException.class})
-    protected ResponseEntity<Object> handleAuthentication(Exception ex) {
-        return getResponseEntity(HttpStatus.UNAUTHORIZED, ex.getMessage());
     }
 
     private ResponseEntity<Object> getResponseEntity(HttpStatus status, Object message) {

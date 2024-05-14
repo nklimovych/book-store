@@ -6,10 +6,11 @@ import jakarta.validation.constraints.Size;
 
 public record UserLoginRequestDto(
         @NotBlank
+        @Size(min = 8, max = 20)
         @Email
         String email,
         @NotBlank
-        @Size(min = 8, message = "Password must be at least 8 characters long")
+        @Size(min = 8, max = 20, message = "Password must be at least 8 characters long")
         String password
 ) {
 }
