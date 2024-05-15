@@ -6,8 +6,8 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mate.academy.bookstore.dto.book.BookDto;
-import mate.academy.bookstore.dto.book.BookRequestDto;
 import mate.academy.bookstore.dto.book.BookSearchParametersDto;
+import mate.academy.bookstore.dto.book.CreateBookRequestDto;
 import mate.academy.bookstore.service.BookService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -47,7 +47,7 @@ public class BookController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new book", description = "Create a new book with generated ID")
-    public BookDto createBook(@RequestBody @Valid BookRequestDto requestDto) {
+    public BookDto createBook(@RequestBody @Valid CreateBookRequestDto requestDto) {
         return bookService.save(requestDto);
     }
 
@@ -56,7 +56,7 @@ public class BookController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     @Operation(summary = "Update a book by ID", description = "Update a book by its ID, if exists")
     public BookDto updateBook(@PathVariable Long id,
-                              @RequestBody @Valid BookRequestDto requestDto) {
+                              @RequestBody @Valid CreateBookRequestDto requestDto) {
         return bookService.updateById(id, requestDto);
     }
 

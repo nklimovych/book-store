@@ -3,8 +3,9 @@ package mate.academy.bookstore.service.impl;
 import java.util.List;
 import java.util.Objects;
 import mate.academy.bookstore.dto.book.BookDto;
-import mate.academy.bookstore.dto.book.BookRequestDto;
+import mate.academy.bookstore.dto.book.BookDtoWithoutCategoryIds;
 import mate.academy.bookstore.dto.book.BookSearchParametersDto;
+import mate.academy.bookstore.dto.book.CreateBookRequestDto;
 import mate.academy.bookstore.exception.DuplicateIsbnException;
 import mate.academy.bookstore.exception.EntityNotFoundException;
 import mate.academy.bookstore.mapper.BookMapper;
@@ -15,9 +16,9 @@ import mate.academy.bookstore.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
@@ -32,13 +33,13 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto save(BookRequestDto requestDto) {
+    public BookDto save(CreateBookRequestDto requestDto) {
         String isbn = requestDto.getIsbn();
         if (bookRepository.findBookByIsbn(isbn) != null) {
             throw new DuplicateIsbnException("Book with ISBN " + isbn + " already exists");
         }
 
-        Book book = bookMapper.toModel(requestDto);
+        Book book = bookMapper.toEntity(requestDto);
         Book savedBook = bookRepository.save(book);
         return bookMapper.toDto(savedBook);
     }
@@ -56,7 +57,7 @@ public class BookServiceImpl implements BookService {
         return bookMapper.toDto(book);
     }
 
-    public BookDto updateById(Long id, BookRequestDto requestDto) {
+    public BookDto updateById(Long id, CreateBookRequestDto requestDto) {
         Book existingBook = bookRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Book not found by id " + id));
 
@@ -66,7 +67,7 @@ public class BookServiceImpl implements BookService {
             throw new DuplicateIsbnException("Book with ISBN " + requestIsbn + " already exists");
         }
 
-        Book book = bookMapper.toModel(requestDto);
+        Book book = bookMapper.toEntity(requestDto);
         book.setId(id);
         Book savedBook = bookRepository.save(book);
         return bookMapper.toDto(savedBook);
@@ -84,5 +85,12 @@ public class BookServiceImpl implements BookService {
                 .stream()
                 .map(bookMapper::toDto)
                 .toList();
+    }
+
+    @Override
+    public List<BookDtoWithoutCategoryIds> getAllBookByCategoryId(Long id, Pageable pageable) {
+        return bookRepository.findAllBooksByCategoryId(id, pageable).stream()
+                             .map(bookMapper::toDtoWithoutCategories)
+                             .toList();
     }
 }
