@@ -2,6 +2,7 @@ package mate.academy.bookstore.service.impl;
 
 import java.util.List;
 import java.util.Objects;
+import lombok.RequiredArgsConstructor;
 import mate.academy.bookstore.dto.category.CategoryDto;
 import mate.academy.bookstore.exception.DuplicateEntityException;
 import mate.academy.bookstore.exception.EntityNotFoundException;
@@ -9,23 +10,15 @@ import mate.academy.bookstore.mapper.CategoryMapper;
 import mate.academy.bookstore.model.Category;
 import mate.academy.bookstore.repository.category.CategoryRepository;
 import mate.academy.bookstore.service.CategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
-    @Autowired
-    public CategoryServiceImpl(
-            CategoryRepository categoryRepository,
-            CategoryMapper categoryMapper
-    ) {
-        this.categoryRepository = categoryRepository;
-        this.categoryMapper = categoryMapper;
-    }
 
     @Override
     public List<CategoryDto> findAll(Pageable pageable) {
@@ -36,8 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto getById(Long id) {
-        Category category = categoryRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Category not found by id " + id));
+        Category category = findCategoryByIdOrElseThrow(id);
         return categoryMapper.toDto(category);
     }
 
@@ -55,8 +47,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto update(Long id, CategoryDto categoryDto) {
-        Category existingCategory = categoryRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Category not found by id " + id));
+        Category existingCategory = findCategoryByIdOrElseThrow(id);
 
         String categoryName = categoryDto.name();
         if (!Objects.equals(existingCategory.getName(), categoryName)
@@ -73,6 +64,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void delete(Long id) {
+        findCategoryByIdOrElseThrow(id);
         categoryRepository.deleteById(id);
+    }
+
+    private Category findCategoryByIdOrElseThrow(Long id) {
+        return categoryRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Category not found by id " + id));
     }
 }
