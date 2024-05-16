@@ -19,7 +19,6 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
-
     @Override
     public List<CategoryDto> findAll(Pageable pageable) {
         return categoryRepository.findAll(pageable).stream()
