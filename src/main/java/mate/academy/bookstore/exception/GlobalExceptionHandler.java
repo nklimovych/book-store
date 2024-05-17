@@ -38,6 +38,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return getResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
+    @ExceptionHandler(DuplicateEntityException.class)
+    protected ResponseEntity<Object> handleMethodRepository(DuplicateEntityException ex) {
+        return getResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
     @ExceptionHandler(EntityNotFoundException.class)
     protected ResponseEntity<Object> handleMethodNotFound(EntityNotFoundException ex) {
         return getResponseEntity(HttpStatus.NOT_FOUND, ex.getMessage());
