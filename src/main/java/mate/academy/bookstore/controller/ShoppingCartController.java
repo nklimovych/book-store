@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mate.academy.bookstore.dto.cart.CartItemRequestDto;
 import mate.academy.bookstore.dto.cart.CartItemResponseDto;
+import mate.academy.bookstore.dto.cart.QuantityRequestDto;
 import mate.academy.bookstore.dto.cart.ShoppingCartDto;
 import mate.academy.bookstore.model.User;
 import mate.academy.bookstore.service.ShoppingCartService;
@@ -54,7 +55,7 @@ public class ShoppingCartController {
     @Operation(summary = "Modify the quantity of an item in the cart",
             description = "Update the quantity of a specified item in the user's shopping cart")
     public CartItemResponseDto updateCartItem(@PathVariable Long cartItemId,
-                                              @RequestBody int quantity) {
+                                              @RequestBody QuantityRequestDto quantity) {
         return shoppingCartService.updateQuantity(cartItemId, quantity);
     }
 

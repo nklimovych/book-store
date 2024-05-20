@@ -3,6 +3,7 @@ package mate.academy.bookstore.service.impl;
 import lombok.RequiredArgsConstructor;
 import mate.academy.bookstore.dto.cart.CartItemRequestDto;
 import mate.academy.bookstore.dto.cart.CartItemResponseDto;
+import mate.academy.bookstore.dto.cart.QuantityRequestDto;
 import mate.academy.bookstore.dto.cart.ShoppingCartDto;
 import mate.academy.bookstore.exception.EntityNotFoundException;
 import mate.academy.bookstore.mapper.CartItemMapper;
@@ -50,10 +51,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     @Transactional
-    public CartItemResponseDto updateQuantity(Long itemId, int quantity) {
+    public CartItemResponseDto updateQuantity(Long itemId, QuantityRequestDto quantity) {
         CartItem cartItem = getCartItem(itemId);
 
-        cartItem.setQuantity(quantity);
+        cartItem.setQuantity(quantity.getQuantity());
         return itemMapper.toDto(itemRepository.save(cartItem));
     }
 
