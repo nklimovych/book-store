@@ -1,5 +1,6 @@
 package mate.academy.bookstore.model.order;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -35,6 +36,7 @@ public class Order {
     private User user;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Status status;
 
     @Column(nullable = false)
@@ -43,6 +45,6 @@ public class Order {
     @Column(nullable = false)
     private String shippingAddress;
 
-    @OneToMany(mappedBy = "orderItem")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE)
     private Set<OrderItem> orderItems = new HashSet<>();
 }
