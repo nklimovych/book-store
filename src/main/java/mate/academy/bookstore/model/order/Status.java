@@ -5,5 +5,6 @@ public enum Status {
     PACKAGING,
     SHIPPING,
     DELIVERED,
-    COMPLETED
+    COMPLETED,
+    CANCELED
 }
