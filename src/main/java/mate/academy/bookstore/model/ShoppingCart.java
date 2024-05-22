@@ -1,5 +1,6 @@
 package mate.academy.bookstore.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -31,7 +32,7 @@ public class ShoppingCart {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "shoppingCart")
+    @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.REMOVE)
     private Set<CartItem> cartItems = new HashSet<>();
 
     public ShoppingCart(User user) {

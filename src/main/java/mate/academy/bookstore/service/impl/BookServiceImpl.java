@@ -1,6 +1,5 @@
 package mate.academy.bookstore.service.impl;
 
-import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 import mate.academy.bookstore.dto.book.BookDto;
@@ -46,9 +45,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @Transactional
     public List<BookDto> findAll(Pageable pageable) {
-        return bookRepository.findAll(pageable).stream()
+        return bookRepository.findAllBooks(pageable).stream()
                 .map(bookMapper::toDto)
                 .toList();
     }

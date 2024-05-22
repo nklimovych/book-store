@@ -65,6 +65,6 @@ public class ShoppingCartController {
     @Operation(summary = "Remove an item from the shopping cart",
             description = "Delete a specified item from the user's shopping cart, if it exists")
     public void deleteCartItem(@PathVariable Long cartItemId) {
-        shoppingCartService.delete(cartItemId);
+        shoppingCartService.deleteCartItem(cartItemId);
     }
 }
