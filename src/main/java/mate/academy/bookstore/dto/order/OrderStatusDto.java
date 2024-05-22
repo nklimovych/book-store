@@ -1,10 +1,11 @@
 package mate.academy.bookstore.dto.order;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import mate.academy.bookstore.model.order.Status;
 
 @Data
 public class OrderStatusDto {
-    @NotBlank
-    private String status;
+    @NotNull
+    private Status status;
 }
