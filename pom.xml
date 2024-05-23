@@ -114,7 +114,6 @@
             <artifactId>spring-boot-docker-compose</artifactId>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
