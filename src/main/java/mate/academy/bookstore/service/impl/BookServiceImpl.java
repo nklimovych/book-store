@@ -35,7 +35,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto save(CreateBookRequestDto requestDto) {
         String isbn = requestDto.getIsbn();
-        if (bookRepository.findBookByIsbn(isbn) != null) {
+        if (bookRepository.findBookByIsbn(isbn).isPresent()) {
             throw new DuplicateIsbnException("Book with ISBN " + isbn + " already exists");
         }
 
@@ -63,7 +63,7 @@ public class BookServiceImpl implements BookService {
 
         String requestIsbn = requestDto.getIsbn();
         if (!Objects.equals(existingBook.getIsbn(), requestIsbn)
-                && bookRepository.findBookByIsbn(requestIsbn) != null) {
+                && bookRepository.findBookByIsbn(requestIsbn).isPresent()) {
             throw new DuplicateIsbnException("Book with ISBN " + requestIsbn + " already exists");
         }
 
