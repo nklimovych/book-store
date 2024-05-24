@@ -17,14 +17,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.SoftDelete;
 
 @Getter
 @Setter
 @Entity
 @EqualsAndHashCode(of = {"id", "user"})
 @ToString
-@SoftDelete
 @NoArgsConstructor
 @Table(name = "shopping_carts")
 public class ShoppingCart {

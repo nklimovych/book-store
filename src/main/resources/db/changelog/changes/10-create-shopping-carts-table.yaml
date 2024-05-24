@@ -17,12 +17,6 @@ databaseChangeLog:
                   type: bigint
                   constraints:
                     nullable: false
-              - column:
-                  name: deleted
-                  type: bit
-                  defaultValueBoolean: false
-                  constraints:
-                    nullable: false
         - addForeignKeyConstraint:
             baseTableName: shopping_carts
             baseColumnNames: user_id

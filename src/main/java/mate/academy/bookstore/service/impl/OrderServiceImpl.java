@@ -20,16 +20,16 @@ import mate.academy.bookstore.model.User;
 import mate.academy.bookstore.model.order.Order;
 import mate.academy.bookstore.model.order.OrderItem;
 import mate.academy.bookstore.model.order.Status;
+import mate.academy.bookstore.repository.cart.ShoppingCartRepository;
 import mate.academy.bookstore.repository.order.OrderItemRepository;
 import mate.academy.bookstore.repository.order.OrderRepository;
 import mate.academy.bookstore.service.OrderService;
-import mate.academy.bookstore.service.ShoppingCartService;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
-    private final ShoppingCartService shoppingCartService;
+    private final ShoppingCartRepository cartRepository;
     private final OrderRepository orderRepository;
     private final OrderItemRepository itemRepository;
     private final OrderItemMapper itemMapper;
@@ -38,13 +38,19 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public void createOrder(OrderRequestDto orderDto, User user) {
-        ShoppingCart cart = shoppingCartService.getShoppingCart(user);
-        Set<CartItem> cartItems = cart.getCartItems();
+        ShoppingCart cart = cartRepository.findByUserId(user.getId()).orElseThrow(() ->
+                new EntityNotFoundException("The authorized user does not have a shopping cart"));
+
+        Set<CartItem> items = cart.getCartItems();
+        if (items.isEmpty()) {
+            throw new EntityNotFoundException("Unable to proceed: Cart is empty");
+        }
 
         Order order = createNewOrder(orderDto, user, cart);
-        Set<OrderItem> orderItems = createOrderItems(order, cartItems);
+        Set<OrderItem> orderItems = createOrderItems(order, items);
         order.setOrderItems(orderItems);
 
+        cartRepository.delete(cart);
         orderRepository.save(order);
     }
 
@@ -105,14 +111,14 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order();
         order.setUser(user);
         order.setStatus(Status.PENDING);
-        order.setTotal(getTotalPrice(cart));
+        order.setTotal(calculateTotalPrice(cart));
         order.setOrderDate(LocalDateTime.now());
         order.setShippingAddress(orderDto.getShippingAddress());
 
         return orderRepository.save(order);
     }
 
-    private BigDecimal getTotalPrice(ShoppingCart cart) {
+    private BigDecimal calculateTotalPrice(ShoppingCart cart) {
         return cart.getCartItems().stream()
                    .map(i -> i.getBook()
                               .getPrice()
