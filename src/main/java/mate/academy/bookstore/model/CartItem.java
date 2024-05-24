@@ -12,10 +12,12 @@ import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @EqualsAndHashCode(of = {"id", "shoppingCart", "book"})
+@ToString
 @Entity
 @Table(name = "cart_items")
 public class CartItem {

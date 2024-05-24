@@ -61,10 +61,11 @@ public class OrderController {
     @GetMapping("/{orderId}/items")
     @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     @Operation(summary = "Get all order items from order",
-            description = "Retrieves all items associated with a specific order by its id")
+            description = "Retrieves all items associated for authenticated user")
     public List<OrderItemResponseDto> getAllOrderItems(
-            @PathVariable Long orderId) {
-        return orderService.getAllOrderItems(orderId);
+            @PathVariable Long orderId,
+            @AuthenticationPrincipal User user) {
+        return orderService.getAllOrderItems(orderId, user);
     }
 
     @GetMapping("/{orderId}/items/{itemId}")

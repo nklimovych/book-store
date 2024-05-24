@@ -24,7 +24,6 @@ import mate.academy.bookstore.repository.order.OrderItemRepository;
 import mate.academy.bookstore.repository.order.OrderRepository;
 import mate.academy.bookstore.service.OrderService;
 import mate.academy.bookstore.service.ShoppingCartService;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -68,12 +67,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderItemResponseDto> getAllOrderItems(Long orderId) {
-        List<OrderItem> items = itemRepository.findByOrderId(orderId);
+    public List<OrderItemResponseDto> getAllOrderItems(Long orderId, User user) {
+        List<OrderItem> items = itemRepository.findByOrderIdAndUser(orderId, user);
 
         if (items.isEmpty()) {
             throw new EntityNotFoundException(
-                    "Unable to proceed: No order items found for the order with id: " + orderId);
+                    "Unable to proceed: No order items found for user with id: " + user.getId());
         }
         return items.stream()
                     .map(itemMapper::toDto)
@@ -82,18 +81,11 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderItemResponseDto getOrderItem(Long orderId, Long itemId, User user) {
-        Order order = orderRepository.findById(orderId).orElseThrow(() ->
-                new EntityNotFoundException(
-                        "Unable to proceed: Order not found with id: " + orderId));
-
-        if (!order.getUser().equals(user)) {
-            throw new AccessDeniedException(
-                    "User doesn't have permission to view order with id: " + orderId);
-        }
-        return itemRepository.findByIdAndOrderId(itemId, orderId)
-                             .map(itemMapper::toDto)
-                             .orElseThrow(() -> new EntityNotFoundException(
-                                     "Unable to proceed: Order item not found with id: " + itemId));
+        return itemRepository.findByOrderIdAndItemIdAndUser(orderId, itemId, user)
+                         .map(itemMapper::toDto)
+                         .orElseThrow(() -> new EntityNotFoundException(
+                                 "Unable to proceed: The requested item with id " + itemId
+                                         + " was not found in order with id " + orderId));
     }
 
     private Set<OrderItem> createOrderItems(Order order, Set<CartItem> cartItems) {

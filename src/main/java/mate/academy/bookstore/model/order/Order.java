@@ -17,13 +17,17 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import mate.academy.bookstore.model.User;
 import org.hibernate.annotations.SoftDelete;
 
 @Getter
 @Setter
+@EqualsAndHashCode(of = {"id", "user", "orderDate", "shippingAddress"})
+@ToString
 @SoftDelete
 @Entity
 @Table(name = "orders")

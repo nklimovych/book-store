@@ -12,14 +12,18 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.SoftDelete;
 
 @Getter
 @Setter
 @Entity
+@EqualsAndHashCode(of = {"id", "user"})
+@ToString
 @SoftDelete
 @NoArgsConstructor
 @Table(name = "shopping_carts")
@@ -32,7 +36,7 @@ public class ShoppingCart {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.ALL)
     private Set<CartItem> cartItems = new HashSet<>();
 
     public ShoppingCart(User user) {

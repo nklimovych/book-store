@@ -51,9 +51,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                                           .orElseGet(() -> {
                                               CartItem item = new CartItem();
                                               item.setShoppingCart(cart);
+                                              item.setBook(book);
                                               return item;
                                           });
-        cartItem.setBook(book);
+
         cartItem.setQuantity(requestItemDto.getQuantity());
         return itemMapper.toDto(itemRepository.save(cartItem));
     }
