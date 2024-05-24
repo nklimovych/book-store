@@ -73,7 +73,8 @@ public class OrderController {
             description = "Retrieves a specific item from an order identified by its id")
     public OrderItemResponseDto getOrderItem(
             @PathVariable Long orderId,
-            @PathVariable Long itemId) {
-        return orderService.getOrderItem(orderId, itemId);
+            @PathVariable Long itemId,
+            @AuthenticationPrincipal User user) {
+        return orderService.getOrderItem(orderId, itemId, user);
     }
 }

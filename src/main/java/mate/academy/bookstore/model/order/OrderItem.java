@@ -10,13 +10,17 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import mate.academy.bookstore.model.Book;
 import org.hibernate.annotations.SoftDelete;
 
 @Getter
 @Setter
+@ToString
+@EqualsAndHashCode(of = {"id", "order", "book", "price"})
 @SoftDelete
 @Entity
 @Table(name = "order_items")

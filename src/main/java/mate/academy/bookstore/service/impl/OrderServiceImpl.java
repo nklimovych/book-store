@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -15,23 +14,23 @@ import mate.academy.bookstore.dto.order.OrderStatusDto;
 import mate.academy.bookstore.exception.EntityNotFoundException;
 import mate.academy.bookstore.mapper.OrderItemMapper;
 import mate.academy.bookstore.mapper.OrderMapper;
-import mate.academy.bookstore.model.Book;
 import mate.academy.bookstore.model.CartItem;
 import mate.academy.bookstore.model.ShoppingCart;
 import mate.academy.bookstore.model.User;
 import mate.academy.bookstore.model.order.Order;
 import mate.academy.bookstore.model.order.OrderItem;
 import mate.academy.bookstore.model.order.Status;
-import mate.academy.bookstore.repository.cart.ShoppingCartRepository;
 import mate.academy.bookstore.repository.order.OrderItemRepository;
 import mate.academy.bookstore.repository.order.OrderRepository;
 import mate.academy.bookstore.service.OrderService;
+import mate.academy.bookstore.service.ShoppingCartService;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
-    private final ShoppingCartRepository cartRepository;
+    private final ShoppingCartService shoppingCartService;
     private final OrderRepository orderRepository;
     private final OrderItemRepository itemRepository;
     private final OrderItemMapper itemMapper;
@@ -40,12 +39,13 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public void createOrder(OrderRequestDto orderDto, User user) {
-        ShoppingCart cart = getCart(user);
-        Map<Book, Integer> books = getBooks(cart);
+        ShoppingCart cart = shoppingCartService.getShoppingCart(user);
+        Set<CartItem> cartItems = cart.getCartItems();
 
-        Order order = orderRepository.save(createNewOrder(orderDto, user, cart));
-        Set<OrderItem> orderItems = saveOrderItem(order, books);
+        Order order = createNewOrder(orderDto, user, cart);
+        Set<OrderItem> orderItems = createOrderItems(order, cartItems);
         order.setOrderItems(orderItems);
+
         orderRepository.save(order);
     }
 
@@ -68,21 +68,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Set<OrderItem> saveOrderItem(Order order, Map<Book, Integer> book) {
-        return book.entrySet().stream()
-                   .map(e -> {
-                       OrderItem item = new OrderItem();
-                       item.setBook(e.getKey());
-                       item.setQuantity(e.getValue());
-                       item.setOrder(order);
-                       item.setPrice(e.getKey().getPrice());
-                       return item;
-                   })
-                   .map(itemRepository::save)
-                   .collect(Collectors.toSet());
-    }
-
-    @Override
     public List<OrderItemResponseDto> getAllOrderItems(Long orderId) {
         List<OrderItem> items = itemRepository.findByOrderId(orderId);
 
@@ -96,43 +81,50 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderItemResponseDto getOrderItem(Long orderId, Long itemId) {
+    public OrderItemResponseDto getOrderItem(Long orderId, Long itemId, User user) {
         Order order = orderRepository.findById(orderId).orElseThrow(() ->
                 new EntityNotFoundException(
                         "Unable to proceed: Order not found with id: " + orderId));
 
-        return itemRepository.findByIdAndOrder(itemId, order)
+        if (!order.getUser().equals(user)) {
+            throw new AccessDeniedException(
+                    "User doesn't have permission to view order with id: " + orderId);
+        }
+        return itemRepository.findByIdAndOrderId(itemId, orderId)
                              .map(itemMapper::toDto)
                              .orElseThrow(() -> new EntityNotFoundException(
                                      "Unable to proceed: Order item not found with id: " + itemId));
     }
 
-    private Order createNewOrder(OrderRequestDto orderDto, User user, ShoppingCart cart) {
-        Order newOrder = new Order();
-        newOrder.setUser(user);
-        newOrder.setStatus(Status.PENDING);
-        newOrder.setTotal(getTotalPrice(cart));
-        newOrder.setOrderDate(LocalDateTime.now());
-        newOrder.setShippingAddress(orderDto.getShippingAddress());
+    private Set<OrderItem> createOrderItems(Order order, Set<CartItem> cartItems) {
+        return cartItems.stream()
+                        .map(cartItem -> {
+                            OrderItem item = new OrderItem();
+                            item.setBook(cartItem.getBook());
+                            item.setQuantity(cartItem.getQuantity());
+                            item.setOrder(order);
+                            item.setPrice(cartItem.getBook().getPrice());
+                            return itemRepository.save(item);
+                        })
+                        .collect(Collectors.toSet());
+    }
 
-        return newOrder;
+    private Order createNewOrder(OrderRequestDto orderDto, User user, ShoppingCart cart) {
+        Order order = new Order();
+        order.setUser(user);
+        order.setStatus(Status.PENDING);
+        order.setTotal(getTotalPrice(cart));
+        order.setOrderDate(LocalDateTime.now());
+        order.setShippingAddress(orderDto.getShippingAddress());
+
+        return orderRepository.save(order);
     }
 
     private BigDecimal getTotalPrice(ShoppingCart cart) {
         return cart.getCartItems().stream()
-                           .map(i -> i.getBook()
-                                      .getPrice()
-                                      .multiply(BigDecimal.valueOf(i.getQuantity())))
-                           .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    private ShoppingCart getCart(User user) {
-        return cartRepository.findByUser_Id(user.getId())
-                             .orElseGet(() -> cartRepository.save(new ShoppingCart(user)));
-    }
-
-    private Map<Book, Integer> getBooks(ShoppingCart cart) {
-        return cart.getCartItems().stream()
-                   .collect(Collectors.toMap(CartItem::getBook, CartItem::getQuantity));
+                   .map(i -> i.getBook()
+                              .getPrice()
+                              .multiply(BigDecimal.valueOf(i.getQuantity())))
+                   .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

@@ -37,14 +37,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     @Transactional
     public ShoppingCartDto getByUser(User user) {
-        ShoppingCart cart = getCart(user);
+        ShoppingCart cart = getShoppingCart(user);
         return cartMapper.toDto(cart);
     }
 
     @Override
     @Transactional
     public CartItemResponseDto addCartItem(User user, CartItemRequestDto requestItemDto) {
-        ShoppingCart cart = getCart(user);
+        ShoppingCart cart = getShoppingCart(user);
         Book book = getBook(requestItemDto.getBookId());
 
         CartItem cartItem = itemRepository.findByShoppingCartAndBook(cart, book)
@@ -77,8 +77,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         itemRepository.delete(cartItem);
     }
 
-    private ShoppingCart getCart(User user) {
-        return cartRepository.findByUser_Id(user.getId())
+    @Override
+    @Transactional
+    public ShoppingCart getShoppingCart(User user) {
+        return cartRepository.findByUserId(user.getId())
                              .orElseGet(() -> cartRepository.save(new ShoppingCart(user)));
 
     }
