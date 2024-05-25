@@ -19,8 +19,8 @@ import org.hibernate.annotations.SoftDelete;
 
 @Getter
 @Setter
-@ToString
-@EqualsAndHashCode(of = {"id", "order", "book", "price"})
+@ToString(exclude = {"order", "book"})
+@EqualsAndHashCode(exclude = {"order", "book"})
 @SoftDelete
 @Entity
 @Table(name = "order_items")
@@ -38,7 +38,7 @@ public class OrderItem {
     private Book book;
 
     @Column(nullable = false)
-    private int quantity;
+    private Integer quantity;
 
     @Column(nullable = false)
     private BigDecimal price;

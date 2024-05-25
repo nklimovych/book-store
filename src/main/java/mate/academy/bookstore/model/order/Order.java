@@ -22,12 +22,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import mate.academy.bookstore.model.User;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SoftDelete;
 
 @Getter
 @Setter
-@EqualsAndHashCode(of = {"id", "user", "orderDate", "shippingAddress"})
-@ToString
+@EqualsAndHashCode(exclude = {"user", "orderItems"})
+@ToString(exclude = {"user", "orderItems"})
 @SoftDelete
 @Entity
 @Table(name = "orders")
@@ -47,7 +48,7 @@ public class Order {
     @Column(nullable = false)
     private BigDecimal total;
 
-    @Column(nullable = false)
+    @CreationTimestamp
     private LocalDateTime orderDate;
 
     @Column(nullable = false)
