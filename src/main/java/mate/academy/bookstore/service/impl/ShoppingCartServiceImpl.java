@@ -37,23 +37,24 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     @Transactional
     public ShoppingCartDto getByUser(User user) {
-        ShoppingCart cart = getCart(user);
+        ShoppingCart cart = getShoppingCart(user);
         return cartMapper.toDto(cart);
     }
 
     @Override
     @Transactional
     public CartItemResponseDto addCartItem(User user, CartItemRequestDto requestItemDto) {
-        ShoppingCart cart = getCart(user);
+        ShoppingCart cart = getShoppingCart(user);
         Book book = getBook(requestItemDto.getBookId());
 
         CartItem cartItem = itemRepository.findByShoppingCartAndBook(cart, book)
                                           .orElseGet(() -> {
                                               CartItem item = new CartItem();
                                               item.setShoppingCart(cart);
+                                              item.setBook(book);
                                               return item;
                                           });
-        cartItem.setBook(book);
+
         cartItem.setQuantity(requestItemDto.getQuantity());
         return itemMapper.toDto(itemRepository.save(cartItem));
     }
@@ -71,14 +72,15 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Transactional
     public void deleteCartItem(Long itemId) {
         CartItem cartItem = getCartItem(itemId);
+        ShoppingCart cart = cartItem.getShoppingCart();
 
-        ShoppingCart shoppingCart = cartItem.getShoppingCart();
-        shoppingCart.getCartItems().remove(cartItem);
-        itemRepository.delete(cartItem);
+        itemRepository.deleteByIdAndShoppingCart(itemId, cart);
     }
 
-    private ShoppingCart getCart(User user) {
-        return cartRepository.findByUser(user)
+    @Override
+    @Transactional
+    public ShoppingCart getShoppingCart(User user) {
+        return cartRepository.findByUserId(user.getId())
                              .orElseGet(() -> cartRepository.save(new ShoppingCart(user)));
 
     }

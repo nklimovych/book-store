@@ -16,12 +16,14 @@ import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 @Getter
 @Setter
-@EqualsAndHashCode(of = {"id", "title", "author", "isbn", "categories"})
+@EqualsAndHashCode(exclude = {"categories"})
+@ToString(exclude = {"categories"})
 @Entity
 @SQLDelete(sql = "UPDATE books SET is_deleted = true WHERE id=?")
 @SQLRestriction(value = "is_deleted=false")

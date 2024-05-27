@@ -34,7 +34,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto save(CategoryDto categoryDto) {
-        String name = categoryDto.name();
+        String name = categoryDto.getName();
         if (categoryRepository.findByName(name) != null) {
             throw new DuplicateEntityException("Category with name " + name + " already exists");
         }
@@ -48,7 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto update(Long id, CategoryDto categoryDto) {
         Category existingCategory = findCategoryByIdOrElseThrow(id);
 
-        String categoryName = categoryDto.name();
+        String categoryName = categoryDto.getName();
         if (!Objects.equals(existingCategory.getName(), categoryName)
                 && categoryRepository.findByName(categoryName) != null) {
             throw new DuplicateEntityException(
