@@ -20,8 +20,11 @@ public class PriceSpecificationProvider implements SpecificationProvider<Book> {
 
     @Override
     public Specification<Book> getSpecification(BookSearchParametersDto params) {
-        int minPrice = Optional.ofNullable(params.minPrice()).orElse(DEFAULT_MIN_PRICE);
-        int maxPrice = Optional.ofNullable(params.maxPrice()).orElse(DEFAULT_MAX_PRICE);
+        int paramsMinPrice = Optional.ofNullable(params.minPrice()).orElse(DEFAULT_MIN_PRICE);
+        int paramsMaxPrice = Optional.ofNullable(params.maxPrice()).orElse(DEFAULT_MAX_PRICE);
+
+        int minPrice = Math.max(paramsMinPrice, DEFAULT_MIN_PRICE);
+        int maxPrice = (paramsMaxPrice > paramsMinPrice) ? paramsMaxPrice : DEFAULT_MAX_PRICE;
 
         return ((root, query, criteriaBuilder) ->
                 criteriaBuilder.between(root.get(getKey()), minPrice, maxPrice));
