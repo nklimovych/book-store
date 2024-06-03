@@ -1,5 +1,12 @@
 package mate.academy.bookstore.service.impl;
 
+import static mate.academy.bookstore.util.TestConstants.EXPECTED_LIST_SIZE;
+import static mate.academy.bookstore.util.TestConstants.NEW_VALID_CATEGORY_NAME;
+import static mate.academy.bookstore.util.TestConstants.NUMBER_OF_INVOCATIONS;
+import static mate.academy.bookstore.util.TestConstants.PAGE_SIZE;
+import static mate.academy.bookstore.util.TestConstants.VALID_CATEGORY_DESCRIPTION;
+import static mate.academy.bookstore.util.TestConstants.VALID_CATEGORY_ID;
+import static mate.academy.bookstore.util.TestConstants.VALID_CATEGORY_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
@@ -24,13 +31,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 class CategoryServiceImplTest {
-    private static final Long VALID_CATEGORY_ID = 1L;
-    private static final String VALID_CATEGORY_NAME = "Fiction";
-    private static final int PAGE_SIZE = 5;
-    private static final String NEW_VALID_CATEGORY_NAME = "New Fiction";
-    private static final int EXPECTED_LIST_SIZE = 1;
-    private static final int NUMBER_OF_INVOCATIONS = 1;
-
     @Mock
     private CategoryRepository categoryRepository;
 
@@ -40,25 +40,31 @@ class CategoryServiceImplTest {
     @InjectMocks
     private CategoryServiceImpl categoryService;
 
+    private Category validCategory;
+
     @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
+
+        validCategory = new Category();
+        validCategory.setId(VALID_CATEGORY_ID);
+        validCategory.setName(VALID_CATEGORY_NAME);
+        validCategory.setDescription(VALID_CATEGORY_DESCRIPTION);
     }
 
     @Test
     @DisplayName("Save a valid category (return CategoryDto)")
     void save_ValidCategory_ReturnCategoryDto() {
         CategoryDto categoryDto = getCategoryDto();
-        Category category = getCategory();
 
-        when(categoryMapper.toEntity(categoryDto)).thenReturn(category);
+        when(categoryMapper.toEntity(categoryDto)).thenReturn(validCategory);
         when(categoryRepository.findByName(VALID_CATEGORY_NAME)).thenReturn(null);
-        when(categoryRepository.save(category)).thenReturn(category);
-        when(categoryMapper.toDto(category)).thenReturn(categoryDto);
+        when(categoryRepository.save(validCategory)).thenReturn(validCategory);
+        when(categoryMapper.toDto(validCategory)).thenReturn(categoryDto);
 
         CategoryDto savedCategory = categoryService.save(categoryDto);
 
-        assertEquals(VALID_CATEGORY_NAME, savedCategory.getName());
+        assertEquals(categoryDto, savedCategory);
     }
 
     @Test
@@ -79,30 +85,30 @@ class CategoryServiceImplTest {
     @DisplayName("Find all categories (return list of CategoryDto)")
     void findAll_ValidRequest_ReturnListOfCategoryDto() {
         Pageable pageable = Pageable.ofSize(PAGE_SIZE);
-        Category category = getCategory();
+
         CategoryDto categoryDto = getCategoryDto();
 
-        when(categoryRepository.findAll(pageable)).thenReturn(new PageImpl<>(List.of(category)));
-        when(categoryMapper.toDto(category)).thenReturn(categoryDto);
+        when(categoryRepository.findAll(pageable))
+                .thenReturn(new PageImpl<>(List.of(validCategory)));
+        when(categoryMapper.toDto(validCategory)).thenReturn(categoryDto);
 
         List<CategoryDto> categories = categoryService.findAll(pageable);
 
         assertEquals(EXPECTED_LIST_SIZE, categories.size());
-        assertEquals(VALID_CATEGORY_NAME, categories.getFirst().getName());
+        assertEquals(categoryDto, categories.getFirst());
     }
 
     @Test
     @DisplayName("Find category by id (return CategoryDto)")
     void getById_ValidRequest_ReturnCategoryDto() {
-        Category category = getCategory();
         CategoryDto categoryDto = getCategoryDto();
 
-        when(categoryRepository.findById(VALID_CATEGORY_ID)).thenReturn(Optional.of(category));
-        when(categoryMapper.toDto(category)).thenReturn(categoryDto);
+        when(categoryRepository.findById(VALID_CATEGORY_ID)).thenReturn(Optional.of(validCategory));
+        when(categoryMapper.toDto(validCategory)).thenReturn(categoryDto);
 
         CategoryDto foundCategory = categoryService.getById(VALID_CATEGORY_ID);
 
-        assertEquals(VALID_CATEGORY_NAME, foundCategory.getName());
+        assertEquals(categoryDto, foundCategory);
     }
 
     @Test
@@ -120,43 +126,36 @@ class CategoryServiceImplTest {
     @Test
     @DisplayName("Update category (return updated CategoryDto)")
     void update_ValidRequest_ReturnCategoryDto() {
-        Category category = getCategory();
-        CategoryDto updateCategoryDto = new CategoryDto();
-        updateCategoryDto.setName(NEW_VALID_CATEGORY_NAME);
+        CategoryDto categoryDto = new CategoryDto();
+        categoryDto.setName(NEW_VALID_CATEGORY_NAME);
 
-        when(categoryRepository.findById(VALID_CATEGORY_ID)).thenReturn(Optional.of(category));
-        when(categoryRepository.findByName(updateCategoryDto.getName())).thenReturn(null);
-        when(categoryMapper.toEntity(updateCategoryDto)).thenReturn(category);
-        when(categoryRepository.save(category)).thenReturn(category);
-        when(categoryMapper.toDto(category)).thenReturn(updateCategoryDto);
+        when(categoryRepository.findById(VALID_CATEGORY_ID)).thenReturn(Optional.of(validCategory));
+        when(categoryRepository.findByName(categoryDto.getName())).thenReturn(null);
+        when(categoryMapper.toEntity(categoryDto)).thenReturn(validCategory);
+        when(categoryRepository.save(validCategory)).thenReturn(validCategory);
+        when(categoryMapper.toDto(validCategory)).thenReturn(categoryDto);
 
-        CategoryDto result = categoryService.update(VALID_CATEGORY_ID, updateCategoryDto);
-        assertEquals(updateCategoryDto.getName(), result.getName());
+        CategoryDto updatedCategory = categoryService.update(VALID_CATEGORY_ID, categoryDto);
+        assertEquals(categoryDto, updatedCategory);
     }
 
     @Test
     @DisplayName("Delete category by id")
     void delete_ValidRequest_DeleteCategory() {
-        Category category = getCategory();
-        category.setId(VALID_CATEGORY_ID);
 
-        when(categoryRepository.findById(VALID_CATEGORY_ID)).thenReturn(Optional.of(category));
+        validCategory.setId(VALID_CATEGORY_ID);
+
+        when(categoryRepository.findById(VALID_CATEGORY_ID)).thenReturn(Optional.of(validCategory));
 
         categoryService.delete(VALID_CATEGORY_ID);
         verify(categoryRepository, times(NUMBER_OF_INVOCATIONS)).deleteById(VALID_CATEGORY_ID);
-    }
-
-    private static Category getCategory() {
-        Category category = new Category();
-        category.setId(VALID_CATEGORY_ID);
-        category.setName(VALID_CATEGORY_NAME);
-        return category;
     }
 
     private static CategoryDto getCategoryDto() {
         CategoryDto categoryDto = new CategoryDto();
         categoryDto.setId(VALID_CATEGORY_ID);
         categoryDto.setName(VALID_CATEGORY_NAME);
+        categoryDto.setDescription(VALID_CATEGORY_DESCRIPTION);
         return categoryDto;
     }
 }

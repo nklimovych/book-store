@@ -1,5 +1,21 @@
 package mate.academy.bookstore.repository.book;
 
+import static mate.academy.bookstore.util.TestConstants.DELETE_DATA_FROM_DB;
+import static mate.academy.bookstore.util.TestConstants.EMPTY_CATEGORY_ID;
+import static mate.academy.bookstore.util.TestConstants.EMPTY_STRING;
+import static mate.academy.bookstore.util.TestConstants.INSERT_DATA_INTO_DB;
+import static mate.academy.bookstore.util.TestConstants.INVALID_BOOK_ISBN;
+import static mate.academy.bookstore.util.TestConstants.INVALID_ID;
+import static mate.academy.bookstore.util.TestConstants.PAGE_NUMBER;
+import static mate.academy.bookstore.util.TestConstants.PAGE_SIZE;
+import static mate.academy.bookstore.util.TestConstants.VALID_BOOK_AUTHOR;
+import static mate.academy.bookstore.util.TestConstants.VALID_BOOK_DESCRIPTION;
+import static mate.academy.bookstore.util.TestConstants.VALID_BOOK_ID;
+import static mate.academy.bookstore.util.TestConstants.VALID_BOOK_ISBN;
+import static mate.academy.bookstore.util.TestConstants.VALID_BOOK_ISBN_NOT_IN_DB;
+import static mate.academy.bookstore.util.TestConstants.VALID_BOOK_PRICE;
+import static mate.academy.bookstore.util.TestConstants.VALID_BOOK_TITLE;
+import static mate.academy.bookstore.util.TestConstants.VALID_CATEGORY_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -8,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 import java.util.Optional;
 import mate.academy.bookstore.model.Book;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,22 +36,21 @@ import org.springframework.test.context.jdbc.Sql;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
 class BookRepositoryTest {
-    private static final String DELETE_DATA_FROM_DB = "classpath:database/delete-data-from-db.sql";
-    private static final String INSERT_DATA_INTO_DB = "classpath:database/insert-data-into-db.sql";
-    private static final Long VALID_BOOK_ID_KOBZAR = 1L;
-    private static final String VALID_BOOK_TITLE_KOBZAR = "Kobzar";
-    private static final String VALID_BOOK_ISBN_KOBZAR = "978-1-1516-4732-0";
-    private static final String INVALID_BOOK_ISBN = "978-11-1516-4732-02";
-    private static final long INVALID_ID = -1L;
-    private static final long VALID_CATEGORY_ID = 1L;
-    private static final long EMPTY_CATEGORY_ID = 4L;
-    private static final int PAGE_NUMBER = 0;
-    private static final int PAGE_SIZE = 5;
-    private static final String EMPTY_STRING = "";
-    private static final String VALID_BOOK_ISBN_NOT_IN_DB = "978-1-2345-6789-0";
-
     @Autowired
     private BookRepository bookRepository;
+
+    private Book validBook;
+
+    @BeforeEach
+    void setUp() {
+        validBook = new Book();
+        validBook.setId(VALID_BOOK_ID);
+        validBook.setTitle(VALID_BOOK_TITLE);
+        validBook.setAuthor(VALID_BOOK_AUTHOR);
+        validBook.setIsbn(VALID_BOOK_ISBN);
+        validBook.setPrice(VALID_BOOK_PRICE);
+        validBook.setDescription(VALID_BOOK_DESCRIPTION);
+    }
 
     @Test
     @DisplayName("Find all books (valid request)")
@@ -51,10 +67,9 @@ class BookRepositoryTest {
     @Sql(scripts = {DELETE_DATA_FROM_DB, INSERT_DATA_INTO_DB},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void findBookByIsbn_ValidIsbn_ReturnsBookWithMatchingIsbn() {
-        Optional<Book> bookOptional = bookRepository.findBookByIsbn(VALID_BOOK_ISBN_KOBZAR);
+        Optional<Book> bookOptional = bookRepository.findBookByIsbn(VALID_BOOK_ISBN);
         assertTrue(bookOptional.isPresent());
-        assertEquals(VALID_BOOK_ID_KOBZAR, bookOptional.get().getId());
-        assertEquals(VALID_BOOK_ISBN_KOBZAR, bookOptional.get().getIsbn());
+        assertEquals(validBook, bookOptional.get());
     }
 
     @Test
@@ -89,9 +104,9 @@ class BookRepositoryTest {
     @Sql(scripts = {DELETE_DATA_FROM_DB, INSERT_DATA_INTO_DB},
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void findBookById_ValidId_ReturnsBookWithMatchingId() {
-        Book book = bookRepository.findBookById(VALID_BOOK_ID_KOBZAR).orElse(null);
+        Book book = bookRepository.findBookById(VALID_BOOK_ID).orElse(null);
         assertNotNull(book);
-        assertEquals(VALID_BOOK_TITLE_KOBZAR, book.getTitle());
+        assertEquals(validBook, book);
     }
 
     @Test

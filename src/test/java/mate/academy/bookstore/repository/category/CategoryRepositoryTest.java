@@ -1,10 +1,20 @@
 package mate.academy.bookstore.repository.category;
 
+import static mate.academy.bookstore.util.TestConstants.CATEGORY_NAME_SPECIAL_CHARACTERS;
+import static mate.academy.bookstore.util.TestConstants.DELETE_DATA_FROM_DB;
+import static mate.academy.bookstore.util.TestConstants.EMPTY_STRING;
+import static mate.academy.bookstore.util.TestConstants.INSERT_DATA_INTO_DB;
+import static mate.academy.bookstore.util.TestConstants.INVALID_CATEGORY_NAME;
+import static mate.academy.bookstore.util.TestConstants.VALID_CATEGORY_DESCRIPTION;
+import static mate.academy.bookstore.util.TestConstants.VALID_CATEGORY_ID;
+import static mate.academy.bookstore.util.TestConstants.VALID_CATEGORY_NAME;
+import static mate.academy.bookstore.util.TestConstants.VALID_CATEGORY_NAME_DIFFERENT_CASES;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import mate.academy.bookstore.model.Category;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +25,18 @@ import org.springframework.test.context.jdbc.Sql;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class CategoryRepositoryTest {
-    private static final String DELETE_DATA_FROM_DB = "classpath:database/delete-data-from-db.sql";
-    private static final String INSERT_DATA_INTO_DB = "classpath:database/insert-data-into-db.sql";
-    private static final String VALID_CATEGORY_NAME = "Poetry";
-    private static final String INVALID_CATEGORY_NAME = "Coco Jamboo";
-    private static final String VALID_CATEGORY_NAME_DIFFERENT_CASES = "pOetRy";
-    private static final String CATEGORY_NAME_SPECIAL_CHARACTERS = "Po*try";
-    private static final String EMPTY_STRING = "";
-
     @Autowired
     private CategoryRepository categoryRepository;
+
+    private Category validCategory;
+
+    @BeforeEach
+    void setUp() {
+        validCategory = new Category();
+        validCategory.setId(VALID_CATEGORY_ID);
+        validCategory.setName(VALID_CATEGORY_NAME);
+        validCategory.setDescription(VALID_CATEGORY_DESCRIPTION);
+    }
 
     @Test
     @DisplayName("Find a category by name - (valid name)")
@@ -33,7 +45,7 @@ class CategoryRepositoryTest {
     void findByName_ValidName_ReturnsCategory() {
         Category category = categoryRepository.findByName(VALID_CATEGORY_NAME);
         assertNotNull(category);
-        assertEquals(VALID_CATEGORY_NAME, category.getName());
+        assertEquals(validCategory, category);
     }
 
     @Test
