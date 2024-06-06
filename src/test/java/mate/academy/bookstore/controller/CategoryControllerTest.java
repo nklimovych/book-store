@@ -1,5 +1,14 @@
 package mate.academy.bookstore.controller;
 
+import static mate.academy.bookstore.util.TestConstants.ADMIN_ROLE;
+import static mate.academy.bookstore.util.TestConstants.CATEGORIES_ID_BOOKS_URL;
+import static mate.academy.bookstore.util.TestConstants.CATEGORIES_ID_URL;
+import static mate.academy.bookstore.util.TestConstants.CATEGORIES_URL;
+import static mate.academy.bookstore.util.TestConstants.EXPRESSION;
+import static mate.academy.bookstore.util.TestConstants.NAME_EXPRESSION;
+import static mate.academy.bookstore.util.TestConstants.USER_ROLE;
+import static mate.academy.bookstore.util.TestConstants.VALID_CATEGORY_ID;
+import static mate.academy.bookstore.util.TestConstants.VALID_CATEGORY_NAME;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -32,15 +41,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CategoryControllerTest {
-    private static final Long VALID_CATEGORY_ID = 1L;
-    private static final String VALID_CATEGORY_NAME = "Fiction";
-    private static final String CATEGORIES_URL = "/categories";
-    private static final String CATEGORIES_ID_URL = "/categories/{id}";
-    private static final String CATEGORIES_ID_BOOKS_URL = "/categories/{id}/books";
-    private static final String EXPRESSION = "$";
-    private static final String NAME_EXPRESSION = "$.name";
-    private static final String ADMIN_ROLE = "ADMIN";
-    private static final String USER_ROLE = "USER";
     private static MockMvc mockMvc;
 
     @Mock

@@ -38,4 +38,24 @@ public class TestConstants {
     public static final String VALID_BOOK_ISBN_NOT_IN_DB = "978-1-2345-6789-0";
     public static final Long INVALID_ID = -1L;
     public static final Long EMPTY_CATEGORY_ID = 4L;
+
+    public static final String ID = "/{id}";
+    public static final String TITLE_PARAM_NAME = "title";
+    public static final String AUTHOR_PARAM_NAME = "author";
+    public static final String ISBN_PARAM_NAME = "isbn";
+    public static final String PRICE_PARAM_NAME = "price";
+    public static final String BASE_URL = "/books";
+    public static final String SEARCH_URL = BASE_URL + "/search";
+
+    public static final String ADMIN_ROLE = "ADMIN";
+    public static final String USER_ROLE = "USER";
+
+    public static final String TITLE_0_EXPRESSION = "$[0].title";
+    public static final String TITLE_EXPRESSION = "$.title";
+
+    public static final String CATEGORIES_URL = "/categories";
+    public static final String CATEGORIES_ID_URL = "/categories/{id}";
+    public static final String CATEGORIES_ID_BOOKS_URL = "/categories/{id}/books";
+    public static final String EXPRESSION = "$";
+    public static final String NAME_EXPRESSION = "$.name";
 }
