@@ -4,16 +4,16 @@
 
 # Hi there 👋
 
-> Welcome to the world of online book shopping, where stories come to life with just a click!
-> 📚 This project isn't just any online bookstore, it's a dynamic platform crafted with Spring Boot
-> magic, ready to whisk you away on a literary adventure.
+ Welcome to the world of online book shopping, where stories come to life with just a click!
+ 📚 This project isn't just any online bookstore, it's a dynamic platform crafted with Spring Boot
+ magic, ready to whisk you away on a literary adventure.
 
 
 ## Description
 
-> The Online Bookstore API isn't just a solution, it's a gateway to a realm of endless literary
-> possibilities. 🌟 Seamlessly blending cutting-edge web technologies with industry best practices,
-> this project sets the stage for a smooth and secure online book shopping experience.
+ The Online Bookstore API isn't just a solution, it's a gateway to a realm of endless literary
+ possibilities. 🌟 Seamlessly blending cutting-edge web technologies with industry best practices,
+ this project sets the stage for a smooth and secure online book shopping experience.
 
 ### Tech Stack:
 * **Spring Boot**: Your trusty steed for crafting Java-based web applications.
