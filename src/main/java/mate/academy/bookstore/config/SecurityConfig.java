@@ -2,6 +2,10 @@ package mate.academy.bookstore.config;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import mate.academy.bookstore.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +26,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private static final String BEARER_AUTH = "bearerAuth";
+    private static final String BEARER = "bearer";
+    private static final String JWT = "JWT";
+
     private final UserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthFilter;
 
@@ -62,5 +70,18 @@ public class SecurityConfig {
             AuthenticationConfiguration authenticationConfiguration
     ) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public OpenAPI customizeOpenApi() {
+        return new OpenAPI()
+                .addSecurityItem(new SecurityRequirement()
+                        .addList(BEARER_AUTH))
+                .components(new Components()
+                        .addSecuritySchemes(BEARER_AUTH, new SecurityScheme()
+                                .name(BEARER_AUTH)
+                                .type(SecurityScheme.Type.HTTP)
+                                .scheme(BEARER)
+                                .bearerFormat(JWT)));
     }
 }
