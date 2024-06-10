@@ -23,7 +23,8 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
     @EntityGraph(attributePaths = {"categories"})
     Optional<Book> findBookByIsbn(String isbn);
 
-    @Query("FROM Book b JOIN FETCH b.categories WHERE b.id = :id")
+    @Query("SELECT b FROM Book b LEFT JOIN FETCH b.categories "
+            + "WHERE b.id = :id AND b.isDeleted = false")
     Optional<Book> findBookById(Long id);
 
     @Query("SELECT b FROM Book b LEFT JOIN FETCH b.categories c WHERE c.id = :categoryId")
