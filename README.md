@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="images/banner.png" height="150" alt="'The Owly' bookstore">
+    <img src="images/banner.png" alt="'The Owly' bookstore">
 </p>
 
 # Hi there 👋
@@ -42,7 +42,6 @@ this project sets the stage for a smooth and secure online book shopping experie
 ## Demo video
 
 [![Video Title](/images/video_cover_image.png)](https://youtu.be/76rQ1n_4F8s)
-
 
 ## Installation
 
