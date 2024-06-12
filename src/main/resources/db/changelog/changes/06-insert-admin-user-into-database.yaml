@@ -8,10 +8,10 @@ databaseChangeLog:
             columns:
               - column:
                   name: email
-                  value: "admin@gmail.com"
+                  value: "admin@mail.com"
               - column:
                   name: password
-                  value: "$2a$10$jylhh5qCNXLrDdpPLTWmvOxGJeDTWQiSS5rN8v5b0G12QF1FlgeCe"
+                  value: "$2a$10$fwNUUs7aPvI8Z3AdDOP/yuVM0oQSia9kR4eeWmlKBkH9boR6tunL."
               - column:
                   name: first_name
                   value: "Admin"
@@ -20,4 +20,4 @@ databaseChangeLog:
                   value: "User"
               - column:
                   name: shipping_address
-                  value: "Truskavetska st. 117, Lviv"
+                  value: "Main St. 99, Lviv"
